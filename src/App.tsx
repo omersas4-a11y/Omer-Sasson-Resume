@@ -205,7 +205,10 @@ export default function App() {
               <MapPin className="w-5 h-5 text-accent" />
               <div className="flex flex-col">
                 <span className="text-xs font-semibold uppercase tracking-widest text-ink/40">Living in</span>
-                <span className="text-base font-bold text-ink">Kiryat Ono, Israel</span>
+                <a href="https://maps.google.com/?q=Kiryat+Ono,+Israel" target="_blank" rel="noreferrer" className="text-base font-bold text-ink hover:text-accent transition-colors relative group w-fit block">
+                  Kiryat Ono, Israel
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-[1.5px] bg-accent group-hover:w-full transition-all duration-300"></span>
+                </a>
               </div>
             </div>
           </div>
@@ -410,7 +413,10 @@ export default function App() {
                    <div className="space-y-8">
                      <div>
                        <span className="text-xs font-bold uppercase tracking-widest text-accent mb-2 block">Location</span>
-                       <p className="text-lg font-bold font-display text-ink">Kiryat Ono, Israel</p>
+                       <a href="https://maps.google.com/?q=Kiryat+Ono,+Israel" target="_blank" rel="noreferrer" className="text-lg font-bold font-display text-ink hover:text-accent transition-colors relative group w-fit block">
+                         Kiryat Ono, Israel
+                         <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300"></span>
+                       </a>
                      </div>
                      <div>
                        <span className="text-xs font-bold uppercase tracking-widest text-accent mb-2 block">Phone</span>

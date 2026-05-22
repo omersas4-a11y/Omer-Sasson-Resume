@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "Message": {
+      "title": "Message",
+      "description": "A contact form message submitted by a user",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "User's full name"
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject of the message"
+        },
+        "details": {
+          "type": "string",
+          "description": "Message details content"
+        },
+        "createdAt": {
+          "type": "timestamp",
+          "description": "When the message was sent"
+        }
+      },
+      "required": ["name", "email", "subject", "details", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Stores user messages from the contact form."
+    }
+  }
+}

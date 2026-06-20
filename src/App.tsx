@@ -1,36 +1,79 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, ArrowUpRight, Menu, X, Mail, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, Menu, X, Mail, ExternalLink } from 'lucide-react';
 import heroImage from './assets/images/regenerated_image_1779118632268.jpg';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './lib/firebase';
 
+import weflowImage from './assets/images/regenerated_image_1781630166699.png';
+import guideDogImage from './assets/images/regenerated_image_1781791887516.png';
+import bugCalendarImage from './assets/images/regenerated_image_1781875695294.png';
+import logoImage from './assets/images/regenerated_image_1781949602646.png';
+
 const Projects = [
   {
-    id: "network",
-    title: "Network",
-    category: "Figma Prototype",
-    description: "Network is a passion project in its early stages, dedicated to uniting tennis enthusiasts of all skill levels. By removing the friction of finding a suitable match, the app makes it easy to connect, play, and build a vibrant community around the sport.",
-    image: "https://i.postimg.cc/BjJCFRgV/1775052826933.png",
-    link: "https://www.figma.com/proto/MJZft7T98PifzpC2evS1p2/NETWORK?node-id=2-2&t=KiBODZKr43H9Olnl-1"
+    id: "bug-calendar",
+    title: "Bug Calendar",
+    category: "Prototype",
+    description: "Built to solve a real problem at the Israeli retail chain Bug, this system makes shift scheduling easy and fair. It collects employees' availability and automatically creates a balanced schedule, saving the manager valuable time. The system is currently active in two physical branches, with plans to expand to more stores.",
+    image: bugCalendarImage,
+    link: "https://bugcalendar.netlify.app/?demo=true"
   },
   {
     id: "weflow",
-    title: "WeFlow",
-    category: "Figma Prototype",
-    description: "Created as a group project for a Product Design course, WeFlow is an intuitive class-booking app dedicated to simplifying the wellness journey. By removing the complexities of scheduling, it allows users to easily discover, book, and manage their favorite fitness sessions, keeping the focus entirely on their health and practice.",
-    image: "https://i.postimg.cc/7bJgfK9c/image.png",
-    link: "https://www.figma.com/proto/UkHIlUDDnc6BEWvhEXXF9r/WeFlow?node-id=1-3602&t=nz0wOVz5SzoxtwWa-1"
+    title: "Play Different Academy",
+    category: "Prototype",
+    description: "Created in collaboration with a close friend and founder, the Play Different Academy website serves as an engaging landing page dedicated to welcoming new athletes. By combining visual storytelling with clear insights into the coach's philosophy and daily activities, it allows parents to easily explore the program and register their kids, keeping the focus on inspiring the next generation of players.",
+    image: weflowImage,
+    link: "https://play-different-academy.netlify.app/"
   },
   {
     id: "milab",
-    title: "Social robot group MILAB",
-    category: "Figma Wireframes",
-    description: "This project involves the design and development of a new research platform for the MILAB Social Robot Group at Reichman University, in collaboration with Prof. Hadas Erel. Currently in its early research and wireframing stages.",
-    image: "https://i.postimg.cc/y33kQ6vq/image.png",
-    link: "https://www.figma.com/design/xYc4xNe4Qs7M9VrNIqSIzf/Social-robot-group?node-id=0-1&t=CDLjxb0F2R7TP1Qg-1"
+    title: "Israel Guide Dog Centre",
+    category: "Figma Prototype",
+    description: "Created as a conceptual project for an Advanced Product Design course, this system is a comprehensive volunteer screening platform designed for the Israel Guide Dog Centre. By organizing the complexities of the onboarding process, it features intuitive application dashboards, interview scheduling calendars, and training cycle management. This seamless interface allows coordinators to easily navigate administrative tasks, keeping the focus entirely on pairing dedicated volunteers with future guide dogs.",
+    image: guideDogImage,
+    link: "https://www.figma.com/proto/Drfg2um5EGEHbXQmY580Pd/%D7%90%D7%A4%D7%99%D7%95%D7%9F-%D7%9E%D7%95%D7%A6%D7%A8-%D7%AA%D7%A8%D7%92%D7%99%D7%9C-2-%D7%9C%D7%99%D7%A0%D7%95%D7%A8-%D7%95%D7%A2%D7%95%D7%9E%D7%A8?node-id=0-1&p=f&viewport=827%2C-747%2C0.35&t=CNJaTZ26Tw37Jlzt-0&scaling=scale-down&content-scaling=fixed&starting-point-node-id=200%3A334&show-proto-sidebar=1"
   }
 ];
+
+const ScrollReveal = ({ children, delay = 0, yOffset = 30, xOffset = 0, className = "", as = "div" }: { children: React.ReactNode, delay?: number, yOffset?: number, xOffset?: number, className?: string, as?: any, key?: string | number }) => {
+  const ref = useRef<any>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      
+      if (rect.top <= windowHeight * 0.8) {
+        setIsVisible(true);
+      } else if (rect.top > windowHeight) {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const MotionComponent = (motion as any)[as] || motion.div;
+
+  return (
+    <MotionComponent
+      ref={ref}
+      initial={{ opacity: 0, y: yOffset, x: xOffset }}
+      animate={isVisible ? { opacity: 1, y: 0, x: 0 } : { opacity: 0, y: yOffset, x: xOffset }}
+      transition={{ duration: 0.6, delay }}
+      className={className}
+    >
+      {children}
+    </MotionComponent>
+  );
+};
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -130,7 +173,9 @@ export default function App() {
     <div className="min-h-screen bg-bg text-ink font-sans selection:bg-accent selection:text-white flex flex-col lg:flex-row relative">
       {/* Mobile Top Navigation */}
       <div className="lg:hidden fixed top-0 w-full h-[70px] bg-white border-b border-ink/10 flex items-center justify-between px-6 z-50">
-        <span className="font-display font-bold text-xl uppercase tracking-widest text-ink">OS</span>
+        <div className="flex items-center cursor-default">
+          <img src={logoImage} alt="Omer Sasson Logo" className="w-12 h-12 object-contain transition-transform duration-300 hover:scale-105" />
+        </div>
         <button onClick={() => setMobileMenuOpen(true)}>
           <Menu className="w-6 h-6 text-ink" />
         </button>
@@ -152,8 +197,8 @@ export default function App() {
             </div>
             <div className="flex flex-col gap-8 mt-12 text-3xl font-display font-bold uppercase">
               <a href="#home" onClick={() => setMobileMenuOpen(false)} className="hover:text-accent">Home</a>
-              <a href="#portfolio" onClick={() => setMobileMenuOpen(false)} className="hover:text-accent">Portfolio</a>
               <a href="#about" onClick={() => setMobileMenuOpen(false)} className="hover:text-accent">About</a>
+              <a href="#portfolio" onClick={() => setMobileMenuOpen(false)} className="hover:text-accent">Portfolio</a>
               <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-accent">Contact</a>
             </div>
           </motion.div>
@@ -162,15 +207,15 @@ export default function App() {
 
       {/* Desktop Left Navigation Bar */}
       <nav className="hidden lg:flex fixed top-0 bottom-0 left-0 w-[88px] bg-white border-r border-ink/10 flex-col items-center justify-between py-12 z-50">
-        <a href="#home" className="w-12 h-12 flex items-center justify-center font-display font-bold text-2xl uppercase text-ink border-2 border-ink rounded-full">
-          OS
-        </a>
+        <div className="w-16 h-16 flex items-center justify-center hover:opacity-80 transition-opacity cursor-default">
+          <img src={logoImage} alt="Omer Sasson Logo" className="w-14 h-14 object-contain transition-transform duration-300 hover:scale-105" />
+        </div>
         
         <div className="flex-1 flex items-center justify-center relative w-full h-full">
           <div className="absolute rotate-[-90deg] flex items-center gap-12 whitespace-nowrap text-sm font-bold uppercase tracking-widest text-[#758696]">
              <a href="#contact" className="hover:text-accent transition-colors">Contact</a>
-             <a href="#about" className="hover:text-accent transition-colors">About</a>
              <a href="#portfolio" className="hover:text-accent transition-colors">Portfolio</a>
+             <a href="#about" className="hover:text-accent transition-colors">About</a>
              <a href="#home" className="hover:text-accent transition-colors">Home</a>
           </div>
         </div>
@@ -188,82 +233,41 @@ export default function App() {
         {/* HERO SECTION */}
         <section id="home" className="flex flex-col lg:flex-row min-h-[calc(100vh-70px)] lg:min-h-screen border-b border-ink/10 bg-white">
           <div className="flex-1 flex flex-col justify-center px-8 lg:px-20 py-16 lg:py-0 relative">
-            <div className="mb-12">
-              <span className="text-sm font-semibold uppercase tracking-widest text-ink/40 mb-2 block">Email:</span>
-              <a href="mailto:omersas4@gmail.com" className="text-accent text-lg lg:text-xl font-bold hover:underline transition-colors">omersas4@gmail.com</a>
-            </div>
             
-            <h1 className="text-5xl lg:text-[76px] font-bold font-display leading-[1.1] text-ink mb-8 overflow-hidden">
+            <ScrollReveal 
+              as="h1"
+              yOffset={30}
+              className="text-5xl lg:text-[76px] font-bold font-display leading-[1.1] text-ink mb-8 overflow-hidden"
+            >
               Hello, I’m Omer. <br/><span className="text-accent">nice to meet you!</span>
-            </h1>
+            </ScrollReveal>
             
-            <p className="text-lg lg:text-xl text-[#758696] font-normal leading-relaxed max-w-lg mb-12">
+            <ScrollReveal 
+              as="p"
+              delay={0.1}
+              yOffset={30}
+              className="text-lg lg:text-xl text-[#758696] font-normal leading-relaxed max-w-lg mb-12"
+            >
               I'm a Communications student specializing in Human-Computer Interaction (HCI), with a strong passion for UX/UI design and creating user-centered digital products.
-            </p>
+            </ScrollReveal>
             
-            <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-accent" />
-              <div className="flex flex-col">
-                <span className="text-xs font-semibold uppercase tracking-widest text-ink/40">Living in</span>
-                <a href="https://maps.google.com/?q=Kiryat+Ono,+Israel" target="_blank" rel="noreferrer" className="text-base font-bold text-ink hover:text-accent transition-colors relative group w-fit block">
-                  Kiryat Ono, Israel
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-[1.5px] bg-accent group-hover:w-full transition-all duration-300"></span>
-                </a>
-              </div>
-            </div>
+
           </div>
           
-          <div className="flex-1 min-h-[50vh] lg:min-h-screen bg-cover bg-center border-l border-ink/10 grayscale-[30%]" style={{ backgroundImage: `url(${heroImage})` }}>
-          </div>
-        </section>
-
-        {/* PORTFOLIO SECTION */}
-        <section id="portfolio" className="py-24 lg:py-32 px-6 lg:px-20 border-b border-ink/10 bg-[#fafafa]">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl lg:text-6xl font-bold font-display uppercase tracking-tight text-ink mb-20 text-center">
-              Selected Works
-            </h2>
-            
-            <div className="space-y-32">
-              {Projects.map((proj, i) => (
-                <div key={proj.id} className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center group">
-                  <div className={`w-full lg:w-[60%] border border-ink/10 rounded-xl overflow-hidden shadow-sm transition-shadow duration-500 group-hover:shadow-xl bg-white ${i % 2 === 0 ? '' : 'lg:order-2'}`}>
-                     <a href={proj.link} target="_blank" rel="noreferrer" className="block relative aspect-[16/10] p-12">
-                       <img src={proj.image} alt={proj.title} className="w-full h-full object-contain filter drop-shadow-md group-hover:scale-[1.02] transition-transform duration-700" referrerPolicy="no-referrer" />
-                     </a>
-                  </div>
-                  
-                  <div className={`w-full lg:w-[40%] flex flex-col ${i % 2 === 0 ? '' : 'lg:order-1 lg:text-right lg:items-end'}`}>
-                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-accent mb-4 block">
-                      {proj.category}
-                    </span>
-                    <h3 className="text-3xl lg:text-5xl font-bold font-display text-ink mb-6">
-                      {proj.title}
-                    </h3>
-                    <p className="text-lg text-[#758696] font-normal leading-relaxed mb-8">
-                      {proj.description}
-                    </p>
-                    <a href={proj.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-ink hover:text-accent transition-colors group/link w-fit relative">
-                      <span className="relative">
-                        View Project
-                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent group-hover/link:w-full transition-all duration-300"></span>
-                      </span>
-                      <ArrowUpRight className="w-4 h-4"/>
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="flex-1 min-h-[50vh] lg:min-h-screen bg-cover bg-[center_20%] border-l border-ink/10 grayscale-[30%]" style={{ backgroundImage: `url(${heroImage})` }}>
           </div>
         </section>
 
         {/* ABOUT SECTION */}
-        <section id="about" className="py-24 lg:py-32 px-6 lg:px-20 border-b border-ink/10 bg-white">
+        <section id="about" className="py-24 lg:py-32 px-6 lg:px-20 border-b border-ink/10 bg-[#fafafa]">
           <div className="max-w-7xl mx-auto">
              <div className="grid lg:grid-cols-12 gap-16">
                 
                 {/* Left side: Bio */}
-                <div className="lg:col-span-5">
+                <ScrollReveal 
+                  xOffset={-30}
+                  className="lg:col-span-5"
+                >
                   <h2 className="text-4xl lg:text-6xl font-bold font-display uppercase tracking-tight text-ink mb-8">
                     About Me
                   </h2>
@@ -273,10 +277,14 @@ export default function App() {
                   <a href="/Omer_Sasson_Resume.pdf" target="_blank" className="inline-flex items-center gap-2 mt-4 px-8 py-3 bg-ink text-white font-bold uppercase tracking-widest text-xs hover:bg-accent transition-colors rounded-sm">
                     View Full Resume
                   </a>
-                </div>
-
+                </ScrollReveal>
+                
                 {/* Right side: Resume Details */}
-                <div className="lg:col-span-7 grid sm:grid-cols-2 gap-12">
+                <ScrollReveal 
+                  xOffset={30}
+                  delay={0.2}
+                  className="lg:col-span-7 grid sm:grid-cols-2 gap-12"
+                >
                    
                    {/* Experience */}
                    <div className="space-y-12">
@@ -329,32 +337,91 @@ export default function App() {
                         <h4 className="text-2xl font-bold font-display text-ink mb-6 border-b border-ink/10 pb-4">Skills & Tools</h4>
                         <div className="flex flex-wrap gap-2">
                            {["Wireframing", "Problem Solving", "Creative Thinking", "Data Analysis", "Visual Design", "Figma", "Generative AI", "Google AI Studio", "Canva"].map(skill => (
-                             <span key={skill} className="bg-[#f3f3f3] text-ink px-3 py-1 text-xs font-bold uppercase tracking-wider">{skill}</span>
+                             <span key={skill} className="bg-[#e4e4e4] text-ink px-3 py-1 text-xs font-bold uppercase tracking-wider">{skill}</span>
                            ))}
                         </div>
                       </div>
                    </div>
 
-                </div>
+                </ScrollReveal>
              </div>
+          </div>
+        </section>
+
+        {/* PORTFOLIO SECTION */}
+        <section id="portfolio" className="py-24 lg:py-32 px-6 lg:px-20 border-b border-ink/10 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <ScrollReveal 
+              as="h2"
+              yOffset={30}
+              className="text-4xl lg:text-6xl font-bold font-display uppercase tracking-tight text-ink mb-20 text-center"
+            >
+              Selected Works
+            </ScrollReveal>
+            
+            <div className="space-y-32">
+              {Projects.map((proj, i) => (
+                <ScrollReveal 
+                  as="div"
+                  key={proj.id} 
+                  yOffset={50}
+                  delay={i * 0.1}
+                  className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center group"
+                >
+                  <div className="w-full lg:w-[60%] border border-ink/10 rounded-xl overflow-hidden shadow-sm transition-shadow duration-500 group-hover:shadow-xl bg-[#fafafa]">
+                     <a href={proj.link} target="_blank" rel="noreferrer" className="block relative aspect-[16/10] p-12">
+                       <img src={proj.image} alt={proj.title} className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-700" referrerPolicy="no-referrer" />
+                     </a>
+                  </div>
+                  
+                  <div className="w-full lg:w-[40%] flex flex-col">
+                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-accent mb-4 block">
+                      {proj.category}
+                    </span>
+                    <h3 className="text-3xl lg:text-5xl font-bold font-display text-ink mb-6">
+                      {proj.title}
+                    </h3>
+                    <p className="text-lg text-[#758696] font-normal leading-relaxed mb-8">
+                      {proj.description}
+                    </p>
+                    <a href={proj.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-ink hover:text-accent transition-colors group/link w-fit relative">
+                      <span className="relative">
+                        View Project
+                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent group-hover/link:w-full transition-all duration-300"></span>
+                      </span>
+                      <ArrowUpRight className="w-4 h-4"/>
+                    </a>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* CONTACT SECTION */}
         <section id="contact" className="py-24 lg:py-32 px-6 lg:px-20 bg-[#fafafa]">
           <div className="max-w-7xl mx-auto">
-             <div className="mb-16">
+             <ScrollReveal 
+               as="div"
+               yOffset={30}
+               className="mb-16"
+             >
                <h2 className="text-4xl lg:text-6xl font-bold font-display uppercase tracking-tight text-ink mb-6">
                  Let's Work Together
                </h2>
                <p className="text-lg text-[#758696] max-w-xl">
                  I’m currently available for new opportunities. Feel free to reach out if you have a project in mind or just want to say hi!
                </p>
-             </div>
+             </ScrollReveal>
 
              <div className="grid lg:grid-cols-12 gap-16 lg:gap-24">
                 {/* Contact Form - Left Column */}
-                <div className="lg:col-span-8">
+                <ScrollReveal 
+                  as="div"
+                  yOffset={30}
+                  delay={0.1}
+                  className="lg:col-span-8"
+                >
                   <form className="space-y-6" onSubmit={handleFormSubmit}>
                     <div className="grid sm:grid-cols-2 gap-6">
                        <div className="space-y-2 group">
@@ -406,10 +473,15 @@ export default function App() {
                       {isSending ? 'Sending...' : 'Send Message'}
                     </button>
                   </form>
-                </div>
+                </ScrollReveal>
 
                 {/* Contact Details - Right Column */}
-                <div className="lg:col-span-4 space-y-12">
+                <ScrollReveal 
+                   as="div"
+                   yOffset={30}
+                   delay={0.2}
+                   className="lg:col-span-4 space-y-12"
+                >
                    <div className="space-y-8">
                      <div>
                        <span className="text-xs font-bold uppercase tracking-widest text-accent mb-2 block">Location</span>
@@ -472,7 +544,7 @@ export default function App() {
                        </a>
                      </div>
                    </div>
-                </div>
+                </ScrollReveal>
              </div>
           </div>
           
